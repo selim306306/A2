@@ -3,7 +3,7 @@
   "short_name": "مكتبة الأمين",
   "lang": "ar",
   "dir": "rtl",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#f4f0e8",
   "theme_color": "#10243b",
