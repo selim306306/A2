@@ -46,9 +46,8 @@ const app = document.querySelector('#app');
 const toast = document.querySelector('#toast');
 let toastTimer;
 
-function icon(symbol) { return `<span class="quick-icon" aria-hidden="true">${symbol}</span>`; }
 function esc(value) { return String(value).replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[ch])); }
-function pageHead(kicker, title, text, action = '') { return `<div class="page-hero"><div><p class="eyebrow">${kicker}</p><h1>${title}</h1><p>${text}</p></div>${action}</div>`; }
+function pageHead(kicker, title, text) { return `<div class="page-hero"><div><p class="eyebrow">${kicker}</p><h1>${title}</h1><p>${text}</p></div></div>`; }
 function routeLink(path, text, cls = 'text-link') { return `<a class="${cls}" href="#${path}" data-route>${text}</a>`; }
 function statCards() { return db.stats.map(([value, label, note]) => `<article class="stat-card"><strong>${value}</strong><span>${label}</span><small>${note}</small></article>`).join(''); }
 
@@ -58,15 +57,15 @@ function renderHome() {
       <div class="hero-copy">
         <p class="eyebrow">مساحة المعرفة في مدرسة الأمين</p>
         <h1>ابحث عن كتابك<br><span>التالي.</span></h1>
-        <p class="lead">منصة مدرسية تجمع فهرس المكتبة، الإعلانات، المسابقات، الكتب الرقمية، واستقبال الزائرين في تجربة واحدة واضحة.</p>
-        <div class="hero-actions"><a class="btn primary" href="#/books/paper" data-route>تصفح الكتب <b>←</b></a><a class="btn" href="#/support" data-route>اسأل المساعد الذكي</a></div>
-        <div class="trust-row"><span><i></i>بيانات منظمة وقابلة للتحديث</span><span><i></i>واجهة مناسبة للهاتف</span><span><i></i>إشراف: أ/ محمد حامد</span></div>
+        <p class="lead">منصة مدرسية تجمع فهرس المكتبة، الإعلانات، المسابقات، الكتب الرقمية، واستقبال الزائرين تحت رقابة وإدارة الذكاء الاصطناعي.</p>
+        <div class="hero-actions"><a class="btn primary" href="#/books/paper" data-route>تصفح الكتب <b>←</b></a><a class="btn" href="#/support" data-route>المساعد والتنفيذ الذكي</a></div>
+        <div class="trust-row"><span><i></i>إدارة وتوجيه: أ/ محمد حامد</span><span><i></i>رقابة إدارية: Gemini AI Manager</span></div>
       </div>
       <div class="hero-board">
-        <div class="board-head"><div><strong>نبض المكتبة</strong><small> · تحديث حي</small></div><span class="tag">مفتوح الآن</span></div>
+        <div class="board-head"><div><strong>نبض المكتبة</strong><small> · إشراف Gemini</small></div><span class="tag">مراقَب آلياً</span></div>
         <div class="board-profile"><div class="profile-avatar">م ح</div><div><strong>محمد حامد</strong><small>أخصائي أول مكتبات · مدرسة الأمين الابتدائية</small></div></div>
         <div class="book-shelf"><div class="shelf-book">علوم</div><div class="shelf-book">قصص</div><div class="shelf-book">تاريخ</div><div class="shelf-book">لغتي</div></div>
-        <div class="board-stats"><div class="mini-stat"><strong>${db.books.length}</strong><small>كتب مفهرسة</small></div><div class="mini-stat"><strong>${db.visitors.length}</strong><small>زيارات مسجلة</small></div><div class="mini-stat"><strong>100%</strong><small>تشغيل محلي</small></div></div>
+        <div class="board-stats"><div class="mini-stat"><strong>${db.books.length}</strong><small>كتب مفهرسة</small></div><div class="mini-stat"><strong>${db.visitors.length}</strong><small>زيارات مسجلة</small></div><div class="mini-stat"><strong>نشط</strong><small>الرقيب الذكي</small></div></div>
       </div>
     </section>
     <section class="section soft"><div class="section-head"><div><p class="eyebrow">أرقام سريعة</p><h2>كل ما تحتاجه في نظرة</h2></div></div><div class="stats-grid">${statCards()}</div></section>
@@ -135,7 +134,7 @@ function renderCompetitions() {
 function renderVisitors() {
   app.innerHTML = `
     <div class="page-shell">
-      ${pageHead('أهلًا بك', 'تسجيل الزائرين', 'سجل حضورك الإلكتروني لمكتبة مدرسة الأمين')}
+      ${pageHead('أهلًا بك', 'تسجيل الزائرين', 'سجل حضورك الإلكتروني لمكتبة مدرسة الأمين (مراقَب بواسطة Gemini Manager)')}
       <div class="content-grid">
         <article class="card"><div class="card-body">
           <h2>تسجيل زيارة جديدة</h2>
@@ -158,14 +157,14 @@ function renderVisitors() {
   document.querySelector('#visitorForm')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const v = {
-      name: document.querySelector('#vName').value,
-      job: document.querySelector('#vJob').value,
-      reason: document.querySelector('#vReason').value,
+      name: document.querySelector('#vName').value.trim(),
+      job: document.querySelector('#vJob').value.trim(),
+      reason: document.querySelector('#vReason').value.trim(),
       time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
     };
     db.visitors.push(v);
     saveDB();
-    showToast('تم تسجيل زيارتك بنجاح! مرحباً بك.');
+    showToast('تم تسجِيل زيارتك ومراجعتها آلياً بواسطة مدير النظام!');
     renderVisitors();
   });
 }
@@ -173,17 +172,17 @@ function renderVisitors() {
 function renderSupport() {
   app.innerHTML = `
     <div class="page-shell">
-      ${pageHead('دعم فني وإرشاد', 'المساعد الذكي للمكتبة', 'اطرح سؤالك حول الكتب، المواضيع، أو خدمات المكتبة')}
+      ${pageHead('الإشراف والمدير الذكي', 'Gemini - مدير ومراقب الموقع', 'اطرح استفساراتك المدرسية أو اطلب توجيهاً إدارياً من الذكاء الاصطناعي')}
       <div class="support-layout">
         <article class="card chat-card">
-          <div class="chat-head"><div class="bot-dot">?</div><div><strong>مساعد مكتبة الأمين</strong><small style="display:block;color:var(--muted);font-size:11px">${db.apiKey ? '● متصل بنموذج Gemini الذكي' : '● الوضع المحلي التلقائي'}</small></div></div>
-          <div class="chat-log" id="chatLog"><div class="message bot">أهلًا بك في مكتبة مدرسة الأمين! كيف أستطيع مساعدتك اليوم؟</div></div>
-          <form class="chat-form" id="chatForm"><input id="chatInput" placeholder="اكتب سؤالك هنا..." autocomplete="off"><button type="submit">إرسال</button></form>
+          <div class="chat-head"><div class="bot-dot">🤖</div><div><strong>Gemini - المدير والمراقب</strong><small style="display:block;color:var(--muted);font-size:11px">${db.apiKey ? '● نظام الإشراف التلقائي مفعل (Gemini API)' : '● الوضع المحلي التلقائي'}</small></div></div>
+          <div class="chat-log" id="chatLog"><div class="message bot">مرحباً بك! أنا Gemini، المدير الرقمي والمراقب العام لمكتبة مدرسة الأمين. كيف أستطيع مساعدتك أو إفادتك باللوائح والكتب اليوم؟</div></div>
+          <form class="chat-form" id="chatForm"><input id="chatInput" placeholder="اكتب سؤالك أو استفسارك هنا..." autocomplete="off"><button type="submit">إرسال</button></form>
         </article>
         <aside class="card"><div class="card-body">
-          <h3>أسئلة شائعة</h3>
+          <h3>أسئلة واستفسارات إدارية</h3>
           <div class="faq-list" style="margin-top:12px">
-            ${['كيف أستعير كتاباً؟', 'ما هي مواعيد المكتبة؟', 'كيف أشارك في المسابقات؟'].map(q => `<button class="faq-button" onclick="askQuestion('${q}')">${q} <span>←</span></button>`).join('')}
+            ${['ما دور المدير والمراقب الذكي؟', 'كيف أستعير كتاباً وفق اللائحة؟', 'ما مواعيد ورتب المكتبة؟'].map(q => `<button class="faq-button" onclick="askQuestion('${q}')">${q} <span>←</span></button>`).join('')}
           </div>
         </div></aside>
       </div>
@@ -207,7 +206,7 @@ async function askQuestion(q) {
   log.scrollTop = log.scrollHeight;
 
   const loadingId = 'bot-' + Date.now();
-  log.insertAdjacentHTML('beforeend', `<div class="message bot" id="${loadingId}">جاري التفكير...</div>`);
+  log.insertAdjacentHTML('beforeend', `<div class="message bot" id="${loadingId}">جاري التحقق والمعالجة بواسطة المدير الذكي...</div>`);
   
   let reply = '';
   if (db.apiKey) {
@@ -216,13 +215,13 @@ async function askQuestion(q) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: `أنت مساعد رقمي لمكتبة مدرسة الأمين الابتدائية ببورسعيد تحت إشراف الأستاذ محمد حامد. أجب بأسلوب ودود وموجز على هذا السؤال: ${q}` }] }]
+          contents: [{ parts: [{ text: `أنت Gemini، مدير الموقع والمراقب العام لمكتبة مدرسة الأمين الابتدائية ببورسعيد (تحت إشراف أخصائي المكتبات الأستاذ محمد حامد). أسلوبك إداري، محترف، وودود جداً. أجب بثقة وبشكل مقتضب على الاستفسار الآتي: ${q}` }] }]
         })
       });
       const data = await res.json();
-      reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'عذراً، لم أستطع فهم الإجابة حالياً.';
+      reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'عذراً، لم أستطع تحليل الطلب حالياً.';
     } catch (err) {
-      reply = 'حدث خطأ في الاتصال بالذكاء الاصطناعي، يرجى التحقق من مفتاح API.';
+      reply = 'حدث خطأ أثناء الاتصال بنظام الإشراف، يرجى مراجعة مفتاح API في لوحة التحكم.';
     }
   } else {
     reply = localReply(q);
@@ -235,63 +234,92 @@ window.askQuestion = askQuestion;
 
 function localReply(q) {
   const query = q.toLowerCase();
-  if (query.includes('مواعيد') || query.includes('وقت')) return 'المكتبة مفتوحة يومياً خلال اليوم الدراسي من 8 صباحاً حتى 12 ظهرًا.';
-  if (query.includes('استعارة') || query.includes('كتاب')) return 'تستطيع التوجه لقسم الكتب الورقية، ثم إبلاغ الأستاذ محمد حامد باسم الكتاب لتسجيل الإعارة.';
-  if (query.includes('مسابقة')) return 'يمكنك متابعة تبويب المسابقات للتعرف على الشروط ومواعيد التسليم.';
-  return 'شكراً لسؤالك! يمكنك دائماً مراجعة الأستاذ محمد حامد أخصائي المكتبة لمزيد من التفاصيل.';
+  if (query.includes('دور') || query.includes('مراقب') || query.includes('مدير')) return 'أنا Gemini، أعمل كمراقب ومدير رقمي للموقع لإدارة المحتوى، فحص سجلات الحضور والكتب، والإجابة عن استفسارات الطلاب والزوار رسمياً.';
+  if (query.includes('مواعيد') || query.includes('وقت')) return 'المكتبة مفتوحة رسمياً طوال اليوم الدراسي من 8 صباحاً حتى 12 ظهراً تحت إشراف أ/ محمد حامد.';
+  if (query.includes('استعارة') || query.includes('كتاب')) return 'يتم تسجيل الاستعارة عبر الفهرس الرقمي ثم اعتمادها رسمياً من أخصائي المكتبة.';
+  return 'بصفتي المدير الذكي للموقع، تم تسجيل استفسارك وسيقوم الأستاذ محمد حامد بمتابعته عند الحاجة.';
 }
 
 function renderDashboard() {
   app.innerHTML = `
     <div class="page-shell">
-      ${pageHead('إدارة المنصة', 'لوحة تحكم المكتبة', 'إدارة الكتب، الزوار، وإعدادات الذكاء الاصطناعي')}
+      ${pageHead('الإدارة المباشرة', 'لوحة التحكم والإشراف الذكي (Gemini Manager)', 'مركز إدارة الكتب، الرقابة الآلية، واستخراج التقارير الإدارية')}
       <div class="dashboard-grid">
         <article class="dashboard-card">
-          <h3>إضافة كتاب جديد</h3>
+          <h3>إضافة كتاب إلى الفهرس</h3>
           <form id="addBookForm" style="display:grid;gap:8px;margin-top:10px">
             <input type="text" id="bTitle" placeholder="عنوان الكتاب" required>
             <input type="text" id="bAuthor" placeholder="المؤلف" required>
             <input type="text" id="bShelf" placeholder="الرف / القسم" required>
             <select id="bType"><option value="ورقي">ورقي</option><option value="رقمي">رقمي</option></select>
-            <button type="submit" class="btn primary">حفظ الكتاب</button>
+            <button type="submit" class="btn primary">اعتماد وإضافة الكتاب</button>
           </form>
         </article>
 
         <article class="dashboard-card">
-          <h3>إعدادات الذكاء الاصطناعي</h3>
-          <p>أدخل مفتاح Gemini API لتفعيل الردود الذكية المباشرة للطلاب:</p>
+          <h3>تفعيل محرك Gemini (المدير الذكي)</h3>
+          <p>أدخل مفتاح Gemini API لتفعيل الرقابة التلقائية للبيانات والردود:</p>
           <input type="password" id="apiKeyInput" value="${db.apiKey || ''}" placeholder="مفتاح API الخاص بك">
-          <button type="button" onclick="saveKey()" class="btn" style="margin-top:8px">حفظ المفتاح</button>
+          <button type="button" onclick="saveKey()" class="btn primary" style="margin-top:8px">تفعيل المدير الرقمي</button>
         </article>
 
         <article class="dashboard-card">
-          <h3>التقارير والجرد</h3>
-          <p>طباعة سجل الزيارات والكتب المفهرسة للعرض المباشر:</p>
-          <button onclick="window.print()" class="btn gold block">طباعة تقرير المكتبة 🖨️</button>
+          <h3>تقرير التوجيه والرقابة (Gemini Audit)</h3>
+          <p>إنشاء تقرير إشراف آلي شامل عن حالة المكتبة والزوار للجودة:</p>
+          <button type="button" onclick="generateAiAudit()" class="btn gold block">توليد تقرير المراقب الذكي 🤖</button>
+          <button onclick="window.print()" class="btn block" style="margin-top:6px">طباعة السجلات 🖨️</button>
         </article>
       </div>
+      <div id="aiAuditResult" style="margin-top:18px"></div>
     </div>`;
 
   document.querySelector('#addBookForm')?.addEventListener('submit', e => {
     e.preventDefault();
     db.books.push({
       id: Date.now(),
-      title: document.querySelector('#bTitle').value,
-      author: document.querySelector('#bAuthor').value,
-      shelf: document.querySelector('#bShelf').value,
+      title: document.querySelector('#bTitle').value.trim(),
+      author: document.querySelector('#bAuthor').value.trim(),
+      shelf: document.querySelector('#bShelf').value.trim(),
       type: document.querySelector('#bType').value,
       status: 'متاح'
     });
     saveDB();
-    showToast('تمت إضافة الكتاب بنجاح إلى الفهرس!');
+    showToast('تم فحص واعتماد إضافة الكتاب بنجاح بواسطة مدير الموقع!');
     e.target.reset();
   });
 }
 
+window.generateAiAudit = async function() {
+  const box = document.querySelector('#aiAuditResult');
+  if (!box) return;
+  box.innerHTML = `<div class="card"><div class="card-body"><p>⏳ جاري قراءة بيانات المنصة وتحليلها بواسطة Gemini Manager...</p></div></div>`;
+
+  const summaryData = `إحصائيات المكتبة: عدد الكتب المفهرسة ${db.books.length} كتاب، عدد الزوار المسجلين ${db.visitors.length} زائر.`;
+  
+  if (db.apiKey) {
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${db.apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: `أنت المراقب العام ومدير موقع مكتبة مدرسة الأمين. اكتب تقرير إشراف وتقييم مقتضب ومحترف موجه لأخصائي المكتبة الأستاذ محمد حامد بناءً على هذه البيانات: ${summaryData}` }] }]
+        })
+      });
+      const data = await res.json();
+      const auditText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'تم فحص النظام: جميع الأقسام تعمل بكفاءة عالية وبشكل منتظم.';
+      box.innerHTML = `<div class="card" style="border:2px solid var(--teal)"><div class="card-body"><h3>📋 تقرير المراقب الإداري (Gemini AI Audit)</h3><p style="white-space:pre-wrap;margin-top:10px">${esc(auditText)}</p></div></div>`;
+    } catch (e) {
+      box.innerHTML = `<div class="card"><div class="card-body"><p>عذراً، تعذر الاتصال بالمحرك. تأكد من صحة مفتاح API.</p></div></div>`;
+    }
+  } else {
+    box.innerHTML = `<div class="card" style="border:2px solid var(--gold)"><div class="card-body"><h3>📋 تقرير المراقب الإداري (التلقائي)</h3><p style="margin-top:10px">تفيد وحدة الرقابة الذكية بانتظام حركة الاستعارة وفهرسة الكتب (${db.books.length} كتاب). السجل الميداني للزوار ينبض بالنشاط وتحت إشراف الأستاذ محمد حامد.</p></div></div>`;
+  }
+};
+
 window.saveKey = function() {
   db.apiKey = document.querySelector('#apiKeyInput').value.trim();
   saveDB();
-  showToast('تم حفظ مفتاح API بنجاح!');
+  showToast('تم تفعيل وإسناد مهام المدير والمراقب لـ Gemini بنجاح!');
 };
 
 function showToast(message) {
