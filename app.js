@@ -1,7 +1,7 @@
 // Persistent Database & AI Manager Engine
 const defaultData = {
   apiKey: '',
-  model: 'gemini-1.5-flash',
+  model: 'gemini-3.5-flash-lite',
   stats: [
     ['2,480', 'كتاب ورقي', 'مفهرس وقابل للبحث'],
     ['360', 'كتاب رقمي', 'قراءة داخل المنصة'],
@@ -28,7 +28,7 @@ const defaultData = {
 };
 
 let db = JSON.parse(localStorage.getItem('amin_lib_db')) || defaultData;
-if (!db.model) db.model = 'gemini-1.5-flash';
+if (!db.model || db.model.includes('2.5')) db.model = 'gemini-3.5-flash-lite';
 
 function saveDB() {
   localStorage.setItem('amin_lib_db', JSON.stringify(db));
@@ -51,7 +51,6 @@ let toastTimer;
 
 function esc(value) { return String(value).replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[ch])); }
 
-// AI Manager Status Bar Banner
 function renderAiManagerBar() {
   const isOnline = Boolean(db.apiKey && db.apiKey.trim().length > 10);
   return `
@@ -176,13 +175,12 @@ function renderHome() {
   fetchLiveBriefing();
 }
 
-// Generates a quick AI overview on the home page
 async function fetchLiveBriefing() {
   const box = document.querySelector('#aiHomeBriefing');
   if (!box) return;
 
   const key = (db.apiKey || '').trim();
-  const model = db.model || 'gemini-1.5-flash';
+  const model = db.model || 'gemini-3.5-flash-lite';
 
   if (key.length > 10) {
     try {
@@ -204,6 +202,7 @@ async function fetchLiveBriefing() {
 
   box.innerHTML = `<div class="ai-briefing-content"><span class="ai-icon-tag">📋 المراقب الذكي (مؤشر محلي)</span><p>منظومة المكتبة تعمل بانتظام. تم تسجيل ${db.books.length} كتاباً مفهرساً، ويسير سجل الزائرين بانتظام تحت إشراف الأستاذ محمد حامد.</p></div>`;
 }
+window.fetchLiveBriefing = fetchLiveBriefing;
 
 function announcementItems(limit = 3) { return db.announcements.slice(0, limit).map(item => `<article class="announcement-item"><div class="date-box"><strong>${item.day}</strong><small>${item.month}</small></div><div class="item-content"><span class="tag">${item.tag}</span><h3>${item.title}</h3><p>${item.text}</p></div></article>`).join(''); }
 function bookResultItems(books) { return books.length ? books.map(book => `<div class="book-result"><div class="book-cover">${book.type}</div><div><strong>${book.title}</strong><small>${book.author} · ${book.shelf} · <span style="color:${book.status === 'متاح' ? 'var(--teal)' : 'var(--brick)'}">${book.status}</span></small></div></div>`).join('') : '<div class="empty-state"> لم نجد نتائج مطابقة.</div>'; }
@@ -232,8 +231,8 @@ function renderCatalog(kind, title, text, type) {
     const found = books.filter(b => [b.title, b.author, b.shelf].join(' ').toLowerCase().includes(term));
     document.querySelector('#catalogGrid').innerHTML = catalogCards(found);
   };
-  document.querySelector('#catalogSearchButton').addEventListener('click', runSearch);
-  document.querySelector('#catalogSearch').addEventListener('input', runSearch);
+  document.querySelector('#catalogSearchButton')?.addEventListener('click', runSearch);
+  document.querySelector('#catalogSearch')?.addEventListener('input', runSearch);
 }
 
 function catalogCards(books) {
@@ -310,7 +309,7 @@ function renderVisitors() {
 
     let welcomeMsg = `أهلاً بك يا ${name} في مكتبة مدرسة الأمين!`;
     const key = (db.apiKey || '').trim();
-    const model = db.model || 'gemini-1.5-flash';
+    const model = db.model || 'gemini-3.5-flash-lite';
 
     if (key.length > 10) {
       try {
@@ -389,7 +388,7 @@ async function askQuestion(q) {
   
   let reply = '';
   const cleanKey = (db.apiKey || '').trim();
-  const currentModel = db.model || 'gemini-1.5-flash';
+  const currentModel = db.model || 'gemini-3.5-flash-lite';
 
   if (cleanKey.length > 10) {
     try {
@@ -442,10 +441,8 @@ function renderDashboard() {
           
           <label style="display:block;margin-top:10px;font-size:12px;font-weight:700">اختر النموذج (Gemini Model):</label>
           <select id="modelSelect" style="margin-top:4px">
-            <option value="gemini-1.5-flash" ${db.model === 'gemini-1.5-flash' ? 'selected' : ''}>gemini-1.5-flash (سريع وموصى به)</option>
-            <option value="gemini-2.5-flash-lite" ${db.model === 'gemini-2.5-flash-lite' ? 'selected' : ''}>gemini-2.5-flash-lite</option>
-            <option value="gemini-2.0-flash" ${db.model === 'gemini-2.0-flash' ? 'selected' : ''}>gemini-2.0-flash</option>
-            <option value="gemini-1.5-pro" ${db.model === 'gemini-1.5-pro' ? 'selected' : ''}>gemini-1.5-pro</option>
+            <option value="gemini-3.5-flash-lite" ${db.model === 'gemini-3.5-flash-lite' ? 'selected' : ''}>gemini-3.5-flash-lite (الموصى به)</option>
+            <option value="gemini-3.5-flash" ${db.model === 'gemini-3.5-flash' ? 'selected' : ''}>gemini-3.5-flash</option>
           </select>
 
           <label style="display:block;margin-top:10px;font-size:12px;font-weight:700">مفتاح API الخاص بـ Google AI Studio:</label>
@@ -473,7 +470,7 @@ function renderDashboard() {
         <article class="dashboard-card">
           <h3>التقارير وسجلات الجرد</h3>
           <p>طباعة تقارير الجرد والسجل الميداني للزائرين معتمدة رسمياً:</p>
-          <button onclick="window.print()" class="btn gold block" style="margin-top:15px">طباعة تقرير المكتبة 🖨️</button>
+          <button onclick="window.print()" class="btn gold block" style="margin-top:15px">طباعة تقرير المكتبة 🖨️️</button>
         </article>
 
       </div>
@@ -513,7 +510,7 @@ window.testConnection = async function() {
     return;
   }
 
-  statusDiv.innerHTML = '⏳ جاري اختبَار الاتصال بالسيرفر والنموذج...';
+  statusDiv.innerHTML = '⏳ جاري اختبار الاتصال بالسيرفر والنموذج...';
 
   try {
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
