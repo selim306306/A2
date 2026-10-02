@@ -1,0 +1,12 @@
+{
+  "name": "مكتبة الأمين الذكية",
+  "short_name": "مكتبة الأمين",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f0e8",
+  "theme_color": "#10243b",
+  "description": "منصة مكتبة مدرسة الأمين الذكية تحت إشراف محمد حامد",
+  "icons": []
+}

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10243b">
+  <meta name="description" content="منصة مكتبة مدرسة الأمين الذكية تحت إشراف محمد حامد">
+  <title>مكتبة الأمين الذكية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="/" data-route aria-label="العودة إلى الصفحة الرئيسية">
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+        <span class="brand-copy">
+          <strong>مكتبة الأمين الذكية</strong>
+          <small>مدرسة الأمين الابتدائية</small>
+        </span>
+      </a>
+      <nav class="primary-nav" aria-label="التنقل الرئيسي">
+        <a href="/books/paper" data-route>الكتب</a>
+        <a href="/competitions" data-route>المسابقات</a>
+        <a href="/announcements" data-route>الإعلانات</a>
+        <a href="/visitors" data-route>الزائرون</a>
+        <a href="/support" data-route>الدعم الذكي</a>
+      </nav>
+      <div class="top-actions">
+        <button class="icon-button" id="themeToggle" type="button" aria-label="تبديل الوضع الليلي">◐</button>
+        <a class="admin-link" href="/dashboard" data-route><span>لوحة التحكم</span><b>↗</b></a>
+        <button class="menu-toggle" id="menuToggle" type="button" aria-label="فتح القائمة">☰</button>
+      </div>
+    </header>
+
+    <main id="app" tabindex="-1"></main>
+
+    <footer class="footer">
+      <div>
+        <div class="footer-brand"><span class="brand-mark small" aria-hidden="true"><span></span></span><strong>مكتبة الأمين الذكية</strong></div>
+        <p>مساحة مدرسية تحفظ المعرفة، وتقرّبها من كل طالب وزائر.</p>
+      </div>
+      <div class="footer-links">
+        <a href="/books/paper" data-route>فهرس الكتب</a>
+        <a href="/visitors" data-route>تسجيل زائر</a>
+        <a href="/support" data-route>اسأل المساعد</a>
+      </div>
+      <div class="footer-meta">
+        <span>مدرسة الأمين الابتدائية</span>
+        <strong>جميع الحقوق محفوظة للأستاذ محمد حامد</strong>
+      </div>
+    </footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>

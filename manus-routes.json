@@ -1,0 +1,12 @@
+{
+  "routes": [
+    { "path": "/", "title": "الرئيسية" },
+    { "path": "/books/paper", "title": "الكتب الورقية" },
+    { "path": "/books/digital", "title": "الكتب الرقمية" },
+    { "path": "/competitions", "title": "المسابقات" },
+    { "path": "/announcements", "title": "الإعلانات" },
+    { "path": "/visitors", "title": "الزائرون" },
+    { "path": "/support", "title": "الدعم الفني الذكي" },
+    { "path": "/dashboard", "title": "لوحة التحكم" }
+  ]
+}
