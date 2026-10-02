@@ -1,4 +1,5 @@
-const CACHE_NAME = 'amin-library-v2';
+const CACHE_NAME = 'amin-library-v3'; // غيّر الرقم إلى v3 أو v4
+
 const ASSETS = [
   './',
   './index.html',
